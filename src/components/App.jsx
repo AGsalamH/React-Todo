@@ -14,39 +14,40 @@ class App extends Component {
                 {id: 1003, title: 'Study', describtion: '2 lectures of distributed systems', active: true},
                 {id: 1004, title: 'Walk the dog', describtion: 'For 30 mins around the house', active: false},
             ],
-            todo: '',
-            describtion: '',
-            showAddTodo: false
+            showAddTodo: false,
+            title: '',
+            description: ''
         }
     }
 
-    addTodo = () => {
+    handleTitleInput = (e) => {
+        const title = e.target.value;
+        this.setState({title});
+    }
+
+    handleDescriptionInput = (e) => {
+        const description = e.target.value;
+        this.setState({description});
+    }
+
+    // On form submit
+    addTodo = (e) => {
+        e.preventDefault();
         const todo = {
             id: Math.floor(Math.random()*100),
-            title: this.state.todo,
+            title: this.state.title,
             active: false,
-            describtion: this.state.describtion || ''
+            description: this.state.description || ''
         }
         const todos = [...this.state.todos];
         todos.push(todo);
         this.setState({todos}, () => {
             this.setState({
-                todo: '',
-                describtion: ''
+                title: '',
+                description: ''
             });
         });
     }
-
-    handleTodoInput = (e) => {
-        const todo = e.target.value;
-        this.setState({todo});
-    }
-
-    handleDescribtionInput = (e) => {
-        const describtion = e.target.value;
-        this.setState({describtion});
-    }
-
 
     deleteTodo = id => {
         const todos = [...this.state.todos];
@@ -63,21 +64,25 @@ class App extends Component {
         this.setState({todos});
     }
 
+    toggleAddTodo = () => {
+        this.setState({showAddTodo: !this.state.showAddTodo})
+    }
+
     render(){
         let addTodo = null;
         if(this.state.showAddTodo){
             addTodo = (<AddTodo 
-            handleTodoInput={this.handleTodoInput} 
-            handleDescribtionInput={this.handleDescribtionInput} 
+            handleTitleInput={this.handleTitleInput} 
+            handleDescriptionInput={this.handleDescriptionInput} 
             addTodo={this.addTodo}
-            todo={this.state.todo}
-            describtion={this.state.describtion}
+            title={this.state.title}
+            description={this.state.description}
         />);
         }
         return (
             <div className="App">
                 <Header title='TodoApp' />
-                <div className="addTodoWrapper mb-3" style={{textAlign: 'center'}} onClick={()=> this.setState({showAddTodo: !this.state.showAddTodo})} >
+                <div className="addTodoWrapper mb-3" style={{textAlign: 'center'}} onClick={this.toggleAddTodo} >
                     <button className="btn btn-primary">
                         Add new Todo
                     </button>
